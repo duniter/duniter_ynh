@@ -14,7 +14,7 @@
         "url": "https://moul.re"
     },
     "requirements": {
-        "yunohost": ">> 2.4.0"
+        "yunohost": ">= 3.0.0"
     },
     "multi_instance": false,
     "services": [
@@ -34,9 +34,9 @@
             {
                 "name": "admin",
                 "type": "user",
-		"ask": {
-		    "en": "Administrator. Must a YunoHost user.",
-	            "fr": "Administrateur. Ce doit être un utilisateur YunoHost"
+	        "ask": {
+		          "en": "Administrator. Must a YunoHost user.",
+	                  "fr": "Administrateur. Ce doit être un utilisateur YunoHost"
 		},
                 "example": "jon doe"
 	    }

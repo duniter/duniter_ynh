@@ -1,27 +1,55 @@
 #!/bin/bash
 
-# Exit and treat unset variables as an error
-set -u
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
 
-# Source app helpers
+source _common.sh
 source /usr/share/yunohost/helpers
-source functions.sh
+
+#=================================================
+# LOAD SETTINGS
+#=================================================
 
 app=$YNH_APP_INSTANCE_NAME
 domain=$(ynh_app_setting_get $app domain)
 port=$(ynh_app_setting_get $app port)
 
-REMOVE_DUNITER
+#=================================================
+# STANDARD REMOVE
+#=================================================
+# STOP AND REMOVE APPLICATION / DEBIAN PACKAGE
+#=================================================
 
+remove_duniter
+
+#=================================================
 # Remove data and conf
-rm -rf /root/.conf/duniter
+#=================================================
 
+ynh_secure_remove /root/.conf/duniter
+
+#=================================================
 # Remove Duniter service to YunoHost monitoring
+#=================================================
+
 yunohost service remove $app
 
-# Remove Nginx configuration
-rm -f /etc/nginx/conf.d/$domain.d/$app.conf
-service nginx reload
+#=================================================
+# REMOVE NGINX CONFIGURATION
+#=================================================
 
-# Close opened port
-yunohost firewall disallow TCP $port
+# Remove the dedicated nginx config
+ynh_remove_nginx_config
+
+#=================================================
+# CLOSE A PORT
+#=================================================
+
+if yunohost firewall list | grep -q "\- $port$"
+then
+	echo "Close port $port" >&2
+	yunohost firewall disallow TCP $port 2>&1
+fi

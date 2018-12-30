@@ -1,25 +1,57 @@
 #!/bin/bash
 
-# Exit on command errors and treat unset variables as an error
-set -eu
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
 
-# Source app helpers and functions
+source _common.sh
 source /usr/share/yunohost/helpers
-source functions.sh
 
-# Retrive arguments
+#=================================================
+# LOAD SETTINGS
+#=================================================
+
 app=$YNH_APP_INSTANCE_NAME
 domain=$(ynh_app_setting_get "$app" domain)
 port=$(ynh_app_setting_get "$app" port)
 arch=$(ynh_app_setting_get "$app" arch)
 admin=$(ynh_app_setting_get "$app" admin)
 
-REMOVE_DUNITER
-INSTALL_DUNITER_DEBIAN_PACKAGE
-CONFIGURE_DUNITER
+#=================================================
+# REMOVE APPLICATION
+#=================================================
 
+remove_duniter
+
+#=================================================
+# REINSTALL APPLICATION
+#=================================================
+
+install_duniter_debian_package
+
+#=================================================
+# CONFIGURE APPLICATION
+#=================================================
+
+config_duniter
+
+#=================================================
 # Start duniter daemon
+#=================================================
+
 duniter webstart
 
-CONFIG_SSOWAT
-CONFIG_NGINX
+#=================================================
+# NGINX CONFIGURATION
+#=================================================
+
+# Create a dedicated nginx config
+ynh_add_nginx_config
+
+#=================================================
+# CONFIGURE SSOWAT
+#=================================================
+
+config_ssowat
