@@ -14,6 +14,26 @@ port=$(ynh_app_setting_get "$app" port)
 arch=$(ynh_app_setting_get "$app" arch)
 admin=$(ynh_app_setting_get "$app" admin)
 
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Configuring system user..." --weight=1
+
+ynh_system_user_create $app
+
+mv /root/.config/duniter $USER/.config/duniter
+
+# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
+ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=100
+
+ynh_backup_before_upgrade
+
+ynh_clean_setup () {
+  ynh_restore_upgradebackup
+}
+
+ynh_abort_if_errors
+
 REMOVE_DUNITER
 INSTALL_DUNITER_DEBIAN_PACKAGE
 INSTALL_SYSTEMD
@@ -24,3 +44,8 @@ systemctl start duniter
 
 CONFIG_SSOWAT
 CONFIG_NGINX
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+ynh_script_progression --message="Installation of $app completed" --last
