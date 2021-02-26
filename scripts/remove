@@ -17,7 +17,7 @@ REMOVE_DUNITER
 systemctl disable duniter.service
 
 # Remove data and conf
-rm -rf /root/.conf/duniter
+rm -rf $USER/.conf/duniter
 
 # Remove Duniter service to YunoHost monitoring
 yunohost service remove $app
@@ -28,3 +28,9 @@ systemctl reload nginx
 
 # Close opened port
 yunohost firewall disallow TCP $port
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_script_progression --message="Removal of $app completed" --last
