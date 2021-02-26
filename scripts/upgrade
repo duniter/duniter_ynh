@@ -14,6 +14,12 @@ port=$(ynh_app_setting_get "$app" port)
 arch=$(ynh_app_setting_get "$app" arch)
 admin=$(ynh_app_setting_get "$app" admin)
 
+# CREATE DEDICATED USER
+ynh_script_progression --message="Making sure dedicated system user exists..."
+
+# Create a dedicated user (if not existing)
+ynh_system_user_create --username=$app
+
 REMOVE_DUNITER
 INSTALL_DUNITER_DEBIAN_PACKAGE
 INSTALL_SYSTEMD
