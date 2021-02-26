@@ -24,8 +24,13 @@ if [[ ! $? -eq 0 ]]; then
   ynh_die "Port not available: ${port}"
 fi
 
-# Check the admin exists in YunoHost users
-ynh_user_exists $admin
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Configuring system user..."
+
+# Create a system user
+ynh_system_user_create --username=$app --home_dir=$final_path
 
 # Get CPU architecture and check it
 arch=$(uname -m)
@@ -52,7 +57,7 @@ CONFIGURE_DUNITER
 systemctl start duniter
 
 # Add Duniter service to the YunoHost monitoring
-yunohost service add $app --log /root/.config/$app/"$app"_default/"$app".log
+yunohost service add $app --log $USER/.config/$app/"$app"_default/"$app".log
 
 CONFIG_SSOWAT
 CONFIG_NGINX
