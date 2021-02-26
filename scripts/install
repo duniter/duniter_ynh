@@ -56,3 +56,8 @@ yunohost service add $app --log /root/.config/$app/"$app"_default/"$app".log
 
 CONFIG_SSOWAT
 CONFIG_NGINX
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+ynh_script_progression --message="Installation of $app completed" --last
